@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+build
 dist-ssr
 .output
 .vinxi
@@ -19,6 +20,11 @@ dist-ssr
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Env — VITE_* values are per-deploy, never committed. See .env.example.
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*

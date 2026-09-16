@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 
+import { PhotoImage } from "@/components/PhotoImage";
+import { gridSizes, heroSizes } from "@/content/images";
 import { filterLabels, filterOptions, heroPhotos, photos, presetCollections, type FilterKey } from "@/content/photos";
 import { site } from "@/content/site";
 
@@ -60,7 +62,7 @@ function Portfolio() {
       <div className="min-w-0">
         <div ref={stripRef} onScroll={(e) => { const el = e.currentTarget; setSlide(Math.round(el.scrollLeft / el.clientWidth)); }} className="no-scrollbar flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto scroll-smooth overscroll-x-contain">
           {heroPhotos.map((photo, i) => <figure key={photo.id} className="relative h-full min-w-full snap-start overflow-hidden bg-muted">
-            <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} decoding="async" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} className="h-full w-full object-cover" />
+            <PhotoImage photo={photo} sizes={heroSizes} priority={i === 0} className="h-full w-full object-cover" />
             <figcaption className="absolute bottom-0 left-0 right-0 flex justify-between bg-film/75 px-4 py-3 text-[10px] uppercase backdrop-blur-sm"><span>{String(i + 1).padStart(2, "0")} / {String(heroPhotos.length).padStart(2, "0")}</span><span className="text-film-muted">Drag or scroll</span></figcaption>
           </figure>)}
         </div>
@@ -86,7 +88,7 @@ function Portfolio() {
 
     <section className="mx-auto max-w-[1440px] px-5 py-12 md:px-10 md:py-20">
       {filtered.length ? <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((photo, i) => <article key={photo.title} className={photo.ratio === "wide" && i % 3 === 0 ? "sm:col-span-2" : ""}>
-        <div className={`group overflow-hidden bg-muted ${photo.ratio === "wide" ? "aspect-video" : photo.ratio === "square" ? "aspect-square" : "aspect-[4/3]"}`}><img loading="lazy" decoding="async" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" /></div>
+        <div className={`group overflow-hidden bg-muted ${photo.ratio === "wide" ? "aspect-video" : photo.ratio === "square" ? "aspect-square" : "aspect-[4/3]"}`}><PhotoImage photo={photo} sizes={gridSizes} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" /></div>
         <div className="mt-3 flex items-start justify-between gap-4"><h2 className="font-display text-xl">{photo.title}</h2><p className="text-right text-[10px] leading-5 text-film-muted">{photo.location}<br />{photo.device}</p></div>
       </article>)}</div> : <div className="py-24 text-center"><p className="font-display text-3xl">No frames meet in this light.</p><button onClick={() => setFilters({})} className="mt-5 border-b border-film-accent pb-1 text-xs text-film-accent">Reset the archive</button></div>}
     </section>

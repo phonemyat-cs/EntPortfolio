@@ -15,6 +15,13 @@ interface ImportMetaEnv {
    * advertise the production domain.
    */
   readonly VITE_SITE_URL?: string;
+
+  /**
+   * Base URL of the bucket serving photograph variants, e.g.
+   * https://images.rowanvale.photo. Unset locally, where the build falls back
+   * to the bundled placeholder assets.
+   */
+  readonly VITE_IMAGE_BASE_URL?: string;
 }
 
 interface ImportMeta {
