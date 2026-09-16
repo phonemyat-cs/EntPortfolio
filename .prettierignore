@@ -1,6 +1,8 @@
 node_modules
 dist
+build
 .output
+.netlify
 .vinxi
 pnpm-lock.yaml
 package-lock.json

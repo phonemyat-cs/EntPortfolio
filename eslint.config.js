@@ -6,7 +6,11 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  // Build output. dist/ and .netlify/ are what the netlify nitro preset emits;
+  // .output/ is what other presets emit; build/ holds generated image variants.
+  // Linting a generated SSR bundle fails on code nobody wrote and takes
+  // minutes doing it.
+  { ignores: ["dist", "build", ".output", ".netlify", ".vinxi"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
