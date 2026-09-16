@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 
+import { site } from "@/content/site";
+
 import coastWalker from "@/assets/coast-walker.jpg";
 import tramLines from "@/assets/tram-lines.jpg";
 import pineRidge from "@/assets/pine-ridge.jpg";
@@ -113,10 +115,10 @@ function Portfolio() {
 
     <footer id="contact" className="border-t border-film-line bg-card">
       <div className="mx-auto grid max-w-[1440px] gap-12 px-5 py-16 md:grid-cols-2 md:px-10 md:py-24">
-        <div><p className="text-[10px] uppercase text-film-muted">Commissions & conversation</p><h2 className="mt-4 max-w-xl font-display text-4xl sm:text-5xl">Have a place, story, or feeling worth keeping?</h2><a href="mailto:hello@rowanvale.photo" className="mt-8 inline-block border-b border-film-accent pb-1 text-sm text-film-accent">hello@rowanvale.photo</a></div>
-        <div id="presets" className="grid grid-cols-2 gap-8 md:justify-self-end md:gap-16"><div><p className="mb-4 text-[10px] uppercase text-film-muted">Film presets</p><a href="#" className="block py-1 text-sm hover:text-film-accent">Quiet Weather ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">After Rain ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">Full collection ↗</a></div><div><p className="mb-4 text-[10px] uppercase text-film-muted">Elsewhere</p><a href="#" className="block py-1 text-sm hover:text-film-accent">Instagram ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">Vimeo ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">Print shop ↗</a></div></div>
+        <div><p className="text-[10px] uppercase text-film-muted">Commissions & conversation</p><h2 className="mt-4 max-w-xl font-display text-4xl sm:text-5xl">Have a place, story, or feeling worth keeping?</h2><a href={`mailto:${site.email}`} className="mt-8 inline-block border-b border-film-accent pb-1 text-sm text-film-accent">{site.email}</a></div>
+        <div id="presets" className="grid grid-cols-2 gap-8 md:justify-self-end md:gap-16"><div><p className="mb-4 text-[10px] uppercase text-film-muted">Film presets</p><a href="#" className="block py-1 text-sm hover:text-film-accent">Quiet Weather ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">After Rain ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">Full collection ↗</a></div><div><p className="mb-4 text-[10px] uppercase text-film-muted">Elsewhere</p><a href={site.instagram.url} rel="me noopener" target="_blank" className="block py-1 text-sm hover:text-film-accent">Instagram {site.instagram.handle} ↗</a></div></div>
       </div>
-      <div className="mx-auto flex max-w-[1440px] justify-between border-t border-film-line px-5 py-5 text-[10px] text-film-muted md:px-10"><span>© 2026 Rowan Vale</span><a href="#top">Back to top ↑</a></div>
+      <div className="mx-auto flex max-w-[1440px] justify-between border-t border-film-line px-5 py-5 text-[10px] text-film-muted md:px-10"><span>© {new Date().getFullYear()} {site.name}</span><a href="#top">Back to top ↑</a></div>
     </footer>
   </main>;
 }
