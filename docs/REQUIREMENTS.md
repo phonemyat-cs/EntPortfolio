@@ -52,23 +52,23 @@ them for requirements.
 The spec is silent on all of these. They come from `docs/lovable-teardown.md`'s
 verification checklist, which is the only written standard this build has.
 
-| ID  | Requirement                                                                                   | Source                           | Status                                                                                                                                                                                             |
-| --- | --------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| N1  | `bun install && bun run build` succeeds on a clean clone with no accounts                     | teardown §Verification           | **present**                                                                                                                                                                                        |
-| N2  | No Lovable package in the dependency tree; no `gpteng.co` or `lovable.dev` request at runtime | teardown §Context                | **present** — Phase 1.                                                                                                                                                                             |
-| N3  | No secret, API key, project id or personal email in tracked files                             | teardown §Verification           | **present** — no secrets. But see the note on email below.                                                                                                                                         |
-| N4  | Every route loads after a hard refresh                                                        | teardown §Verification           | **present** — server-rendered, so every URL is a real server response. The SPA-redirect failure mode does not exist here.                                                                          |
-| N5  | Lighthouse performance and accessibility both above 90, no layout shift                       | teardown §Verification           | **not measured** — no Lighthouse run yet.                                                                                                                                                          |
-| N6  | Every image has non-placeholder `alt` text                                                    | teardown §Verification, §Phase 4 | **conflicts** — see below.                                                                                                                                                                         |
-| N7  | Every image has explicit `width`/`height`                                                     | teardown §Phase 4                | **present** — all eight verified against the JPEG headers; the hero now reads them from the photo record instead of an index check.                                                                |
-| N8  | `srcset`, `loading="lazy"`, `decoding="async"` on images                                      | teardown §Phase 4                | **partial** — `decoding="async"` everywhere, lazy on everything but the hero's first frame, which is eager with `fetchPriority="high"`. `srcset` still missing; it needs the remote variants (C2). |
-| N9  | Galleries in data, not hardcoded in JSX                                                       | teardown §Phase 4                | **present** — `src/content/photos.ts`.                                                                                                                                                             |
-| N10 | Source images web-ready, ~2500px longest edge, never full-resolution exports                  | teardown §Phase 4                | **conflicts** — `photos-source/` holds 7728×5152 originals, 11–25MB each.                                                                                                                          |
-| N11 | Bundle size recorded against the Phase 0 baseline                                             | teardown §Verification           | **present** — `docs/INVENTORY.md` §2.                                                                                                                                                              |
-| N12 | Node version pinned via `.nvmrc` and `engines`                                                | teardown §Phase 3                | **missing**                                                                                                                                                                                        |
-| N13 | CI running typecheck, lint and build on pull requests                                         | teardown §Phase 5                | **missing**                                                                                                                                                                                        |
-| N14 | `.env.example` committed, `.env` gitignored                                                   | teardown §Phase 5                | **missing** — `.gitignore` has no `.env` entry at all.                                                                                                                                             |
-| N15 | Dead shadcn/ui components and their Radix packages removed                                    | teardown §Phase 3                | **missing** — all 46 are dead.                                                                                                                                                                     |
+| ID  | Requirement                                                                                   | Source                           | Status                                                                                                                                                               |
+| --- | --------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| N1  | `bun install && bun run build` succeeds on a clean clone with no accounts                     | teardown §Verification           | **present**                                                                                                                                                          |
+| N2  | No Lovable package in the dependency tree; no `gpteng.co` or `lovable.dev` request at runtime | teardown §Context                | **present** — Phase 1.                                                                                                                                               |
+| N3  | No secret, API key, project id or personal email in tracked files                             | teardown §Verification           | **present** — no secrets. But see the note on email below.                                                                                                           |
+| N4  | Every route loads after a hard refresh                                                        | teardown §Verification           | **present** — server-rendered, so every URL is a real server response. The SPA-redirect failure mode does not exist here.                                            |
+| N5  | Lighthouse performance and accessibility both above 90, no layout shift                       | teardown §Verification           | **present** — 100 / 100 / 96 / 100 with the image pipeline active, CLS 0. See Verification below.                                                                    |
+| N6  | Every image has non-placeholder `alt` text                                                    | teardown §Verification, §Phase 4 | **conflicts** — see below.                                                                                                                                           |
+| N7  | Every image has explicit `width`/`height`                                                     | teardown §Phase 4                | **present** — all eight verified against the JPEG headers; the hero now reads them from the photo record instead of an index check.                                  |
+| N8  | `srcset`, `loading="lazy"`, `decoding="async"` on images                                      | teardown §Phase 4                | **present** — AVIF/WebP/JPEG `srcset` with `sizes`, `decoding="async"` everywhere, lazy on all but the hero's first frame, which is eager at `fetchPriority="high"`. |
+| N9  | Galleries in data, not hardcoded in JSX                                                       | teardown §Phase 4                | **present** — `src/content/photos.ts`.                                                                                                                               |
+| N10 | Source images web-ready, ~2500px longest edge, never full-resolution exports                  | teardown §Phase 4                | **gap (accepted)** — `photos-source/` holds 7728×5152 originals. They are upload sources, never build inputs; nothing in `src/` imports them.                        |
+| N11 | Bundle size recorded against the Phase 0 baseline                                             | teardown §Verification           | **present** — `docs/INVENTORY.md` §2.                                                                                                                                |
+| N12 | Node version pinned via `.nvmrc` and `engines`                                                | teardown §Phase 3                | **present** — plus `.bun-version`, since the two runtimes pin separately.                                                                                            |
+| N13 | CI running typecheck, lint and build on pull requests                                         | teardown §Phase 5                | **present** — `.github/workflows/ci.yml`. Checks only; Netlify deploys.                                                                                              |
+| N14 | `.env.example` committed, `.env` gitignored                                                   | teardown §Phase 5                | **present** — verified with `git check-ignore` both ways.                                                                                                            |
+| N15 | Dead shadcn/ui components and their Radix packages removed                                    | teardown §Phase 3                | **present** — all 46 plus 45 packages; 413 → 271 installed.                                                                                                          |
 
 ---
 
@@ -196,3 +196,68 @@ attribute, and spam handling needs configuring.
 files. `src/content/site.ts` contains `hello@rowanvale.photo`, which is invented
 and not anyone's address. When real contact details replace it, a business
 address belongs in the repository; a personal one does not.
+
+---
+
+## Verification
+
+The teardown brief's checklist, run rather than asserted. Commit `fa68492`
+plus this one.
+
+| Check                                                                             | Result                                                                                                                                                                                                                                                                                                                |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lovable grep returns nothing                                                      | **Pass, with a caveat.** No `lovable`, `gpteng` or `gptengineer` in any source, config or dependency. The word survives in `docs/`, which records what was removed and why, and in two filename references to `docs/lovable-teardown.md`. Scrubbing those would delete the evidence the rest of this file depends on. |
+| `rm -rf node_modules && bun install && bun run build` on a clean clone            | **Pass.** 271 packages, build green, no accounts or credentials needed.                                                                                                                                                                                                                                               |
+| No request to `lovable.dev`, `gpteng.co` or an unexpected third party             | **Pass, with one third party.** Every external origin in the built output is ours, an SVG namespace, or a string inside a library error message. The one real runtime request is Google Fonts. Expected, but see the open items.                                                                                      |
+| No secret, API key or project id in tracked files                                 | **Pass.** The only matches are byte coincidences inside JPEG data and the word "secret" in a CI comment.                                                                                                                                                                                                              |
+| Every route loads, and still loads after a hard refresh                           | **Pass.** `/` returns 200 and an unknown path returns a real 404 from the production build. Server-rendered, so every URL is a server response — the SPA-redirect failure mode does not exist.                                                                                                                        |
+| Lighthouse performance and accessibility above 90, no layout shift                | **Pass.** See below.                                                                                                                                                                                                                                                                                                  |
+| Every image has non-placeholder alt text and explicit width/height                | **Partial.** Mechanically complete; the text describes placeholder images. C4.                                                                                                                                                                                                                                        |
+| Bundle size recorded against the Phase 0 baseline                                 | **Pass.** `docs/INVENTORY.md` §2, and in each commit that moved it.                                                                                                                                                                                                                                                   |
+| Every requirement is present or a recorded gap                                    | **Pass.** Three accepted gaps: R1 search/sort, R7 feedback form, N10 originals in `photos-source/`.                                                                                                                                                                                                                   |
+| A second Netlify build is faster than the first, proving the image cache persists | **Not applicable, and not run.** That check assumes build-time image processing worth caching. Images are generated locally and served from R2, so the Netlify build never touches a photograph and there is no image cache to persist. Nothing has been deployed yet, so no deploy-time claim is made here at all.   |
+
+### Lighthouse
+
+Desktop preset, production build, served by `bun run preview`.
+
+|                                                 | Performance | Accessibility | Best Practices | SEO     |
+| ----------------------------------------------- | ----------- | ------------- | -------------- | ------- |
+| With image pipeline (`VITE_IMAGE_BASE_URL` set) | **100**     | **100**       | 96             | **100** |
+| Bundled-asset fallback (unset)                  | 85          | **100**       | 96             | **100** |
+
+CLS 0, LCP 0.5s, TBT 0ms with the pipeline active; all nine images served as
+AVIF.
+
+Two things worth reading off that table:
+
+- **The fallback path scores 85**, below the brief's 90 threshold, and every
+  point it loses is an image audit — `modern-image-formats`,
+  `uses-responsive-images`, `image-delivery-insight`. That is the expected
+  result of serving single-resolution JPEGs with no `srcset`, and it is what
+  the R2 pipeline exists to fix. The fallback is a build-without-credentials
+  affordance, not a production configuration. **Do not deploy with
+  `VITE_IMAGE_BASE_URL` unset.**
+- **Best Practices 96** is a sandbox artefact, not a defect. The only failing
+  audit is `errors-in-console`, and the single error is
+  `ERR_CERT_AUTHORITY_INVALID` from the test environment's TLS proxy
+  intercepting the Google Fonts request.
+
+The run was done against a local static server standing in for R2, serving
+variants generated from the placeholder assets by the same code path
+`scripts/build-variants.mjs` uses.
+
+---
+
+## Open items
+
+Neither is a requirement. Both are recorded so they are decisions rather than
+oversights.
+
+1. **Google Fonts is the one third-party runtime request.** Two extra
+   connections on a render-blocking path, and every visitor's IP goes to
+   Google. Self-hosting DM Sans and Newsreader removes it entirely and is a
+   contained change. Not done — it was not asked for, and it is a change to
+   how the site loads rather than part of the teardown.
+2. **`overrides.rolldown` is an undocumented pin** inherited from the draft.
+   Left alone; nothing in this work depends on it either way.
