@@ -5,11 +5,9 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
-// This was previously four lines wrapping @lovable.dev/vite-tanstack-config,
-// which supplied the entire plugin chain. What follows is that chain written
-// out: the same open-source plugins in the same order, minus the parts that
-// only did something inside Lovable's editor sandbox (devtools injection, an
-// HMR gate, a dev-server bridge, and an asset proxy pointed at *.lovable.app).
+// This plugin chain was previously supplied wholesale by a vendor wrapper
+// package; see docs/INVENTORY.md §4 for what it contained and why it was
+// unpacked. Everything here is a stock plugin doing an ordinary job.
 //
 // Plugin order matters. tanstackStart must come before viteReact, because it
 // generates the route tree that React then transforms.
