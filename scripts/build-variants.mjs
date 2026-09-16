@@ -51,8 +51,7 @@ async function assertWidthsMatchSite() {
     .split(",")
     .map((n) => Number(n.trim()))
     .filter((n) => !Number.isNaN(n));
-  const same =
-    siteWidths.length === WIDTHS.length && siteWidths.every((w, i) => w === WIDTHS[i]);
+  const same = siteWidths.length === WIDTHS.length && siteWidths.every((w, i) => w === WIDTHS[i]);
   if (!same) {
     throw new Error(
       `Width mismatch.\n  this script: ${WIDTHS.join(", ")}\n  the site:    ${siteWidths.join(", ")}\n` +
@@ -92,8 +91,14 @@ async function generate(sharp, sourcePath, id) {
     const resized = sharp(sourcePath).resize({ width, withoutEnlargement: true });
 
     await Promise.all([
-      resized.clone().avif({ quality: QUALITY.avif }).toFile(join(outDir, `${width}.avif`)),
-      resized.clone().webp({ quality: QUALITY.webp }).toFile(join(outDir, `${width}.webp`)),
+      resized
+        .clone()
+        .avif({ quality: QUALITY.avif })
+        .toFile(join(outDir, `${width}.avif`)),
+      resized
+        .clone()
+        .webp({ quality: QUALITY.webp })
+        .toFile(join(outDir, `${width}.webp`)),
       resized
         .clone()
         .jpeg({ quality: QUALITY.jpg, mozjpeg: true })

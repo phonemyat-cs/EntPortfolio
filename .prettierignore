@@ -6,3 +6,11 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# Verbatim source documents. docs/spec.md is the requirements document and
+# docs/lovable-teardown.md is the brief this repo was reworked against; both
+# are records of what someone else wrote, not our source. Prettier rewrites
+# trailing whitespace, which is a meaningful line break in markdown, so
+# formatting them edits the evidence.
+docs/spec.md
+docs/lovable-teardown.md

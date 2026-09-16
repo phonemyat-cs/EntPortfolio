@@ -4,7 +4,7 @@ Photographs are served from Cloudflare R2, not bundled into the build.
 
 ## Why remote, and what it costs
 
-`docs/spec.md` says "Hosting: Cloudflare free tier" under *Image*. The teardown
+`docs/spec.md` says "Hosting: Cloudflare free tier" under _Image_. The teardown
 brief argued the opposite — build-time optimisation with `vite-imagetools`, no
 CDN at all — and for eleven photographs its argument was the better one. The
 spec wins because it is the source of truth. Recorded as C3 in
@@ -64,11 +64,11 @@ which belong on a public bucket.
 
 A worked example, from a 7728×5152 Fujifilm original:
 
-| | Original | 2000px | 1600px | 800px |
-| --- | --- | --- | --- | --- |
-| AVIF | — | 234 kB | 151 kB | 57 kB |
-| WebP | — | 358 kB | 244 kB | 84 kB |
-| JPEG | 21.9 MB | 481 kB | 312 kB | 101 kB |
+|      | Original | 2000px | 1600px | 800px  |
+| ---- | -------- | ------ | ------ | ------ |
+| AVIF | —        | 234 kB | 151 kB | 57 kB  |
+| WebP | —        | 358 kB | 244 kB | 84 kB  |
+| JPEG | 21.9 MB  | 481 kB | 312 kB | 101 kB |
 
 21.9 MB down to 151 kB for the variant most laptops will actually fetch.
 

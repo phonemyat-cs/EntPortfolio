@@ -28,13 +28,13 @@ The dev server runs on <http://localhost:8080>.
 
 ## Scripts
 
-| Script | What it does |
-| --- | --- |
-| `bun run dev` | Dev server with HMR on port 8080. |
-| `bun run build` | Production build into `.output/`. |
+| Script            | What it does                        |
+| ----------------- | ----------------------------------- |
+| `bun run dev`     | Dev server with HMR on port 8080.   |
+| `bun run build`   | Production build into `.output/`.   |
 | `bun run preview` | Serve the production build locally. |
-| `bun run lint` | ESLint over the project. |
-| `bun run format` | Prettier, writing in place. |
+| `bun run lint`    | ESLint over the project.            |
+| `bun run format`  | Prettier, writing in place.         |
 
 ## How it is put together
 
@@ -88,11 +88,11 @@ GitHub Actions runs checks only, on pull requests: typecheck, lint, build.
 
 ## Documentation
 
-| File | Contents |
-| --- | --- |
-| [`docs/spec.md`](docs/spec.md) | The requirements document. Source of truth for what the site should do. |
-| [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | Every requirement from the spec, with its build status and the known gaps. |
-| [`docs/INVENTORY.md`](docs/INVENTORY.md) | The draft as handed over, recorded before any change. |
-| [`docs/IMAGES.md`](docs/IMAGES.md) | Image pipeline: variants, naming, upload. |
-| [`docs/DESIGN-INTENT.md`](docs/DESIGN-INTENT.md) | The original visual direction, preserved for judging regressions. |
-| [`docs/lovable-teardown.md`](docs/lovable-teardown.md) | The teardown brief this repository was reworked against. |
+| File                                                   | Contents                                                                   |
+| ------------------------------------------------------ | -------------------------------------------------------------------------- |
+| [`docs/spec.md`](docs/spec.md)                         | The requirements document. Source of truth for what the site should do.    |
+| [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)         | Every requirement from the spec, with its build status and the known gaps. |
+| [`docs/INVENTORY.md`](docs/INVENTORY.md)               | The draft as handed over, recorded before any change.                      |
+| [`docs/IMAGES.md`](docs/IMAGES.md)                     | Image pipeline: variants, naming, upload.                                  |
+| [`docs/DESIGN-INTENT.md`](docs/DESIGN-INTENT.md)       | The original visual direction, preserved for judging regressions.          |
+| [`docs/lovable-teardown.md`](docs/lovable-teardown.md) | The teardown brief this repository was reworked against.                   |

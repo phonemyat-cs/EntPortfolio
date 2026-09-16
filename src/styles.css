@@ -156,9 +156,17 @@
     margin: 0;
   }
 
-  button, a { -webkit-tap-highlight-color: transparent; }
-  button { cursor: pointer; }
-  ::selection { background: var(--color-film-accent); color: var(--color-film); }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--color-film-accent);
+    color: var(--color-film);
+  }
 }
 
 @utility film-grain {
@@ -176,9 +184,16 @@
 
 @utility no-scrollbar {
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

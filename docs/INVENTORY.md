@@ -17,15 +17,15 @@ in the Vite plugin array, and a Supabase client.
 The draft is **TanStack Start** — server-rendered, built through nitro, with
 file-based routing. Consequences for the plan:
 
-| Teardown instruction | Reality |
-| --- | --- |
-| Remove `lovable-tagger` from `package.json` + `vite.config.ts` | Package is not present. Not installed, not imported. |
-| Delete the `cdn.gpteng.co` script from `index.html` | There is no `index.html`. The document shell is `RootShell` in `src/routes/__root.tsx`. |
-| Fix Open Graph tags in `index.html` | They live in the `head()` of `__root.tsx` and `routes/index.tsx`. One real hit — see §4. |
-| Move hardcoded Supabase keys to env vars | No Supabase. No `src/integrations/`, no `supabase/config.toml`, no client, no calls. |
-| Flag the Supabase project id before deleting | Not applicable. |
-| Keep `package-lock.json` over `bun.lockb` | Neither exists. The project is bun-native — see §6. |
-| Netlify SPA redirect `/* /index.html 200` | Meaningless for an SSR app; there is no `index.html` to redirect to. |
+| Teardown instruction                                           | Reality                                                                                  |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Remove `lovable-tagger` from `package.json` + `vite.config.ts` | Package is not present. Not installed, not imported.                                     |
+| Delete the `cdn.gpteng.co` script from `index.html`            | There is no `index.html`. The document shell is `RootShell` in `src/routes/__root.tsx`.  |
+| Fix Open Graph tags in `index.html`                            | They live in the `head()` of `__root.tsx` and `routes/index.tsx`. One real hit — see §4. |
+| Move hardcoded Supabase keys to env vars                       | No Supabase. No `src/integrations/`, no `supabase/config.toml`, no client, no calls.     |
+| Flag the Supabase project id before deleting                   | Not applicable.                                                                          |
+| Keep `package-lock.json` over `bun.lockb`                      | Neither exists. The project is bun-native — see §6.                                      |
+| Netlify SPA redirect `/* /index.html 200`                      | Meaningless for an SSR app; there is no `index.html` to redirect to.                     |
 
 **The coupling the instructions miss is the significant one.** See §4.
 
@@ -44,12 +44,12 @@ Output is a Cloudflare Worker plus a static public directory.
 
 ### Client bundle — the number Phase 3 is measured against
 
-| Artefact | Raw | Gzip |
-| --- | --- | --- |
-| `assets/index-*.js` | 344.91 kB | **108.40 kB** |
-| `assets/routes-*.js` | 10.96 kB | 3.49 kB |
-| `assets/styles-*.css` | 79.18 kB | 13.80 kB |
-| **Total JS** | **355.87 kB** | **111.89 kB** |
+| Artefact              | Raw           | Gzip          |
+| --------------------- | ------------- | ------------- |
+| `assets/index-*.js`   | 344.91 kB     | **108.40 kB** |
+| `assets/routes-*.js`  | 10.96 kB      | 3.49 kB       |
+| `assets/styles-*.css` | 79.18 kB      | 13.80 kB      |
+| **Total JS**          | **355.87 kB** | **111.89 kB** |
 
 `.output/public` 1.7M total · `.output/server` 984K.
 
@@ -63,17 +63,17 @@ Output is a Cloudflare Worker plus a static public directory.
 
 From `package.json`. React 19, Tailwind 4, Vite 8, TanStack Start 1.168.
 
-| Package | Version |
-| --- | --- |
-| `@tanstack/react-start` | 1.168.32 |
-| `@tanstack/react-router` | 1.170.18 |
-| `@tanstack/router-plugin` | 1.168.23 |
-| `@tanstack/react-query` | ^5.101.1 |
-| `react` / `react-dom` | ^19.2.0 |
-| `vite` | 8.1.5 |
-| `tailwindcss` / `@tailwindcss/vite` | ^4.2.1 |
-| `nitro` | 3.0.260603-beta (devDependency) |
-| `typescript` | ^5.8.3 |
+| Package                             | Version                         |
+| ----------------------------------- | ------------------------------- |
+| `@tanstack/react-start`             | 1.168.32                        |
+| `@tanstack/react-router`            | 1.170.18                        |
+| `@tanstack/router-plugin`           | 1.168.23                        |
+| `@tanstack/react-query`             | ^5.101.1                        |
+| `react` / `react-dom`               | ^19.2.0                         |
+| `vite`                              | 8.1.5                           |
+| `tailwindcss` / `@tailwindcss/vite` | ^4.2.1                          |
+| `nitro`                             | 3.0.260603-beta (devDependency) |
+| `typescript`                        | ^5.8.3                          |
 
 `overrides: { rolldown: "1.2.1" }` — a pin, reason undocumented. Left alone;
 Vite 8 uses rolldown internally and unpinning it is not part of this work.
@@ -85,10 +85,10 @@ caret range. `nitro` is a beta.
 
 File-based, two files, one URL.
 
-| File | URL | Notes |
-| --- | --- | --- |
-| `src/routes/__root.tsx` | — | App shell. `head()` metadata, `RootShell`, 404 and error boundaries. |
-| `src/routes/index.tsx` | `/` | The entire site. 12.5 kB single component. |
+| File                    | URL | Notes                                                                |
+| ----------------------- | --- | -------------------------------------------------------------------- |
+| `src/routes/__root.tsx` | —   | App shell. `head()` metadata, `RootShell`, 404 and error boundaries. |
+| `src/routes/index.tsx`  | `/` | The entire site. 12.5 kB single component.                           |
 
 `src/routeTree.gen.ts` is generated — do not hand-edit.
 
@@ -178,18 +178,18 @@ cheaper choice.
 
 ### Everything else
 
-| Artefact | Location | Disposition |
-| --- | --- | --- |
-| `reportLovableError()` | `src/lib/lovable-error-reporting.ts` (whole file) | Delete. Posts to `window.__lovableEvents` / `window.__lovableReportRuntimeError`, which exist only inside the Lovable editor preview. Dead weight outside it. |
-| Its call site | `src/routes/__root.tsx:13`, `:41` | Remove import and the `useEffect` in `ErrorComponent`. |
-| `twitter:site: "@Lovable"` | `src/routes/__root.tsx:87` | Replace. Points social cards at Lovable's account. |
-| Missing `og:image` / `og:url` | `__root.tsx`, `routes/index.tsx` | Neither is set at all, so link previews have no image. Not a Lovable artefact but a gap the same commit should close. |
-| `.lovable/project.json` | template id + revision hash | Delete. Editor bookkeeping. |
-| `.lovable/plan/photographer-portfolio-2026-09-16.md` | the generation prompt | Keep the content — it is the only record of the intended visual direction. Fold into docs before deleting the directory. |
-| `LOVABLE:BEGIN/END` block | `AGENTS.md:1-10` | Delete the block. It instructs agents not to rewrite history because it would desync Lovable. Irrelevant once disconnected, and actively misleading. |
-| `minimumReleaseAgeExcludes` | `bunfig.toml:7` | Drop the four `@lovable.dev/*` entries. Keep the 24h supply-chain guard itself — that is a good default worth keeping. |
-| README | `README.md` (whole file) | Rewrite. Lovable onboarding copy, "Open your project in the Lovable editor". |
-| `roadmap.md` | root | Lovable's own build checklist, all items ticked. Superseded by `docs/REQUIREMENTS.md` in Phase 2. |
+| Artefact                                             | Location                                          | Disposition                                                                                                                                                   |
+| ---------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `reportLovableError()`                               | `src/lib/lovable-error-reporting.ts` (whole file) | Delete. Posts to `window.__lovableEvents` / `window.__lovableReportRuntimeError`, which exist only inside the Lovable editor preview. Dead weight outside it. |
+| Its call site                                        | `src/routes/__root.tsx:13`, `:41`                 | Remove import and the `useEffect` in `ErrorComponent`.                                                                                                        |
+| `twitter:site: "@Lovable"`                           | `src/routes/__root.tsx:87`                        | Replace. Points social cards at Lovable's account.                                                                                                            |
+| Missing `og:image` / `og:url`                        | `__root.tsx`, `routes/index.tsx`                  | Neither is set at all, so link previews have no image. Not a Lovable artefact but a gap the same commit should close.                                         |
+| `.lovable/project.json`                              | template id + revision hash                       | Delete. Editor bookkeeping.                                                                                                                                   |
+| `.lovable/plan/photographer-portfolio-2026-09-16.md` | the generation prompt                             | Keep the content — it is the only record of the intended visual direction. Fold into docs before deleting the directory.                                      |
+| `LOVABLE:BEGIN/END` block                            | `AGENTS.md:1-10`                                  | Delete the block. It instructs agents not to rewrite history because it would desync Lovable. Irrelevant once disconnected, and actively misleading.          |
+| `minimumReleaseAgeExcludes`                          | `bunfig.toml:7`                                   | Drop the four `@lovable.dev/*` entries. Keep the 24h supply-chain guard itself — that is a good default worth keeping.                                        |
+| README                                               | `README.md` (whole file)                          | Rewrite. Lovable onboarding copy, "Open your project in the Lovable editor".                                                                                  |
+| `roadmap.md`                                         | root                                              | Lovable's own build checklist, all items ticked. Superseded by `docs/REQUIREMENTS.md` in Phase 2.                                                             |
 
 ### Not found
 
@@ -207,16 +207,16 @@ detection.
 Generated by Lovable, not photographs of anything real. Imported as modules by
 `src/routes/index.tsx`, so Vite fingerprints and emits them.
 
-| File | Size |
-| --- | --- |
+| File                  | Size     |
+| --------------------- | -------- |
 | `concrete-stairs.jpg` | 137.3 kB |
-| `pine-ridge.jpg` | 138.3 kB |
-| `night-cyclist.jpg` | 143.1 kB |
-| `pale-dunes.jpg` | 145.3 kB |
-| `still-lake.jpg` | 154.2 kB |
-| `coast-walker.jpg` | 166.9 kB |
-| `coastal-cabin.jpg` | 183.7 kB |
-| `tram-lines.jpg` | 218.8 kB |
+| `pine-ridge.jpg`      | 138.3 kB |
+| `night-cyclist.jpg`   | 143.1 kB |
+| `pale-dunes.jpg`      | 145.3 kB |
+| `still-lake.jpg`      | 154.2 kB |
+| `coast-walker.jpg`    | 166.9 kB |
+| `coastal-cabin.jpg`   | 183.7 kB |
+| `tram-lines.jpg`      | 218.8 kB |
 
 Already web-sized. Served as single-resolution JPEG with no `srcset`, no AVIF
 or WebP variant, and no responsive sizing — one file for every viewport.
@@ -234,8 +234,8 @@ rather than read from the data.
 
 The real photographs. Fujifilm X100VI.
 
-| File | Pixels | Size | Shot |
-| --- | --- | --- | --- |
+| File           | Pixels    | Size    | Shot             |
+| -------------- | --------- | ------- | ---------------- |
 | `DSCF2490.jpg` | 7728×5152 | 21.9 MB | 2026-08-20 22:28 |
 | `DSCF2499.jpg` | 7728×5152 | 19.5 MB | 2026-08-20 22:29 |
 | `DSCF2552.JPG` | 7728×5152 | 23.9 MB | 2026-08-30 17:19 |

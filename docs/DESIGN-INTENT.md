@@ -2,7 +2,7 @@
 
 Preserved verbatim from `.lovable/plan/photographer-portfolio-2026-09-16.md`
 before that directory was deleted. It is the only written record of what the
-draft was *trying* to look like, which matters when judging whether a later
+draft was _trying_ to look like, which matters when judging whether a later
 change is a fix or a regression.
 
 This is a record of intent, not a requirement. `docs/spec.md` is the source of

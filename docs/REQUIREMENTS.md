@@ -15,22 +15,22 @@ the reason recorded.
 
 ## Functional
 
-| ID | Requirement | Source | Status |
-| --- | --- | --- | --- |
-| R1 | "Search/sort bar" | spec.md §Search/sort bar | **gap (accepted)** — the build has filters but no text search and no sort control. Scope decision: filters only. |
-| R2 | "Attribute/options: Location, theme, device" | spec.md §Search/sort bar | **present** — all three are filter dimensions. |
-| R3 | Image attributes: "Location, theme, device, color, preset, tag (optional – trip tag), preset (optional)" | spec.md §Image | **present** — all six, with `tripTag` optional. Reading recorded as U1. |
-| R4 | "Image Grid: A mix of 16:9, 4:3, 1:1" | spec.md §Image Grid | **present** — `wide`, `standard` and `square`. |
-| R5 | "Preset: A collection of presets group by the same / similar style" | spec.md §Preset | **present** — footer lists each preset with its frame count and filters the archive to it. Reading recorded as U4. |
-| R6 | "Contact: Email, Instagram" | spec.md §Contact | **present** — both wired to `src/content/site.ts`. Values are still placeholders. |
-| R7 | "Feeback Form - Optional" | spec.md §Feedback Form | **gap (accepted)** — marked optional in the spec. Not built. Needs a form backend; see note below. |
-| R8 | "Hosting: Cloudflare free tier" | spec.md §Image → Hosting | **conflicts** — see the conflicts section. |
+| ID  | Requirement                                                                                              | Source                   | Status                                                                                                             |
+| --- | -------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| R1  | "Search/sort bar"                                                                                        | spec.md §Search/sort bar | **gap (accepted)** — the build has filters but no text search and no sort control. Scope decision: filters only.   |
+| R2  | "Attribute/options: Location, theme, device"                                                             | spec.md §Search/sort bar | **present** — all three are filter dimensions.                                                                     |
+| R3  | Image attributes: "Location, theme, device, color, preset, tag (optional – trip tag), preset (optional)" | spec.md §Image           | **present** — all six, with `tripTag` optional. Reading recorded as U1.                                            |
+| R4  | "Image Grid: A mix of 16:9, 4:3, 1:1"                                                                    | spec.md §Image Grid      | **present** — `wide`, `standard` and `square`.                                                                     |
+| R5  | "Preset: A collection of presets group by the same / similar style"                                      | spec.md §Preset          | **present** — footer lists each preset with its frame count and filters the archive to it. Reading recorded as U4. |
+| R6  | "Contact: Email, Instagram"                                                                              | spec.md §Contact         | **present** — both wired to `src/content/site.ts`. Values are still placeholders.                                  |
+| R7  | "Feeback Form - Optional"                                                                                | spec.md §Feedback Form   | **gap (accepted)** — marked optional in the spec. Not built. Needs a form backend; see note below.                 |
+| R8  | "Hosting: Cloudflare free tier"                                                                          | spec.md §Image → Hosting | **conflicts** — see the conflicts section.                                                                         |
 
 ### Derived from R3
 
-| ID | Requirement | Status |
-| --- | --- | --- |
-| R9 | Preset is a filterable image attribute | **present** |
+| ID  | Requirement                                                  | Status      |
+| --- | ------------------------------------------------------------ | ----------- |
+| R9  | Preset is a filterable image attribute                       | **present** |
 | R10 | Trip tag is a filterable image attribute, optional per image | **present** |
 
 ### Present but not in the spec
@@ -38,12 +38,12 @@ the reason recorded.
 The draft built these on its own initiative. Recorded so nobody later mistakes
 them for requirements.
 
-| ID | Feature | Note |
-| --- | --- | --- |
-| R11 | Snap-scrolling hero gallery, six frames, drag + arrows + pagination | From `docs/DESIGN-INTENT.md`, not the spec. |
-| R12 | "extras" filter — film grain, people, rain, long exposure | Not a spec attribute. Closest match is the spec's "tag", but the spec scopes tag to trips. Kept alongside `tripTag`; see U2. |
-| R13 | Result count, clear-filters action, empty state | Reasonable and kept. |
-| R14 | Responsive nav with a mobile menu | Kept. |
+| ID  | Feature                                                             | Note                                                                                                                         |
+| --- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| R11 | Snap-scrolling hero gallery, six frames, drag + arrows + pagination | From `docs/DESIGN-INTENT.md`, not the spec.                                                                                  |
+| R12 | "extras" filter — film grain, people, rain, long exposure           | Not a spec attribute. Closest match is the spec's "tag", but the spec scopes tag to trips. Kept alongside `tripTag`; see U2. |
+| R13 | Result count, clear-filters action, empty state                     | Reasonable and kept.                                                                                                         |
+| R14 | Responsive nav with a mobile menu                                   | Kept.                                                                                                                        |
 
 ---
 
@@ -52,23 +52,23 @@ them for requirements.
 The spec is silent on all of these. They come from `docs/lovable-teardown.md`'s
 verification checklist, which is the only written standard this build has.
 
-| ID | Requirement | Source | Status |
-| --- | --- | --- | --- |
-| N1 | `bun install && bun run build` succeeds on a clean clone with no accounts | teardown §Verification | **present** |
-| N2 | No Lovable package in the dependency tree; no `gpteng.co` or `lovable.dev` request at runtime | teardown §Context | **present** — Phase 1. |
-| N3 | No secret, API key, project id or personal email in tracked files | teardown §Verification | **present** — no secrets. But see the note on email below. |
-| N4 | Every route loads after a hard refresh | teardown §Verification | **present** — server-rendered, so every URL is a real server response. The SPA-redirect failure mode does not exist here. |
-| N5 | Lighthouse performance and accessibility both above 90, no layout shift | teardown §Verification | **not measured** — no Lighthouse run yet. |
-| N6 | Every image has non-placeholder `alt` text | teardown §Verification, §Phase 4 | **conflicts** — see below. |
-| N7 | Every image has explicit `width`/`height` | teardown §Phase 4 | **present** — all eight verified against the JPEG headers; the hero now reads them from the photo record instead of an index check. |
-| N8 | `srcset`, `loading="lazy"`, `decoding="async"` on images | teardown §Phase 4 | **partial** — `decoding="async"` everywhere, lazy on everything but the hero's first frame, which is eager with `fetchPriority="high"`. `srcset` still missing; it needs the remote variants (C2). |
-| N9 | Galleries in data, not hardcoded in JSX | teardown §Phase 4 | **present** — `src/content/photos.ts`. |
-| N10 | Source images web-ready, ~2500px longest edge, never full-resolution exports | teardown §Phase 4 | **conflicts** — `photos-source/` holds 7728×5152 originals, 11–25MB each. |
-| N11 | Bundle size recorded against the Phase 0 baseline | teardown §Verification | **present** — `docs/INVENTORY.md` §2. |
-| N12 | Node version pinned via `.nvmrc` and `engines` | teardown §Phase 3 | **missing** |
-| N13 | CI running typecheck, lint and build on pull requests | teardown §Phase 5 | **missing** |
-| N14 | `.env.example` committed, `.env` gitignored | teardown §Phase 5 | **missing** — `.gitignore` has no `.env` entry at all. |
-| N15 | Dead shadcn/ui components and their Radix packages removed | teardown §Phase 3 | **missing** — all 46 are dead. |
+| ID  | Requirement                                                                                   | Source                           | Status                                                                                                                                                                                             |
+| --- | --------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| N1  | `bun install && bun run build` succeeds on a clean clone with no accounts                     | teardown §Verification           | **present**                                                                                                                                                                                        |
+| N2  | No Lovable package in the dependency tree; no `gpteng.co` or `lovable.dev` request at runtime | teardown §Context                | **present** — Phase 1.                                                                                                                                                                             |
+| N3  | No secret, API key, project id or personal email in tracked files                             | teardown §Verification           | **present** — no secrets. But see the note on email below.                                                                                                                                         |
+| N4  | Every route loads after a hard refresh                                                        | teardown §Verification           | **present** — server-rendered, so every URL is a real server response. The SPA-redirect failure mode does not exist here.                                                                          |
+| N5  | Lighthouse performance and accessibility both above 90, no layout shift                       | teardown §Verification           | **not measured** — no Lighthouse run yet.                                                                                                                                                          |
+| N6  | Every image has non-placeholder `alt` text                                                    | teardown §Verification, §Phase 4 | **conflicts** — see below.                                                                                                                                                                         |
+| N7  | Every image has explicit `width`/`height`                                                     | teardown §Phase 4                | **present** — all eight verified against the JPEG headers; the hero now reads them from the photo record instead of an index check.                                                                |
+| N8  | `srcset`, `loading="lazy"`, `decoding="async"` on images                                      | teardown §Phase 4                | **partial** — `decoding="async"` everywhere, lazy on everything but the hero's first frame, which is eager with `fetchPriority="high"`. `srcset` still missing; it needs the remote variants (C2). |
+| N9  | Galleries in data, not hardcoded in JSX                                                       | teardown §Phase 4                | **present** — `src/content/photos.ts`.                                                                                                                                                             |
+| N10 | Source images web-ready, ~2500px longest edge, never full-resolution exports                  | teardown §Phase 4                | **conflicts** — `photos-source/` holds 7728×5152 originals, 11–25MB each.                                                                                                                          |
+| N11 | Bundle size recorded against the Phase 0 baseline                                             | teardown §Verification           | **present** — `docs/INVENTORY.md` §2.                                                                                                                                                              |
+| N12 | Node version pinned via `.nvmrc` and `engines`                                                | teardown §Phase 3                | **missing**                                                                                                                                                                                        |
+| N13 | CI running typecheck, lint and build on pull requests                                         | teardown §Phase 5                | **missing**                                                                                                                                                                                        |
+| N14 | `.env.example` committed, `.env` gitignored                                                   | teardown §Phase 5                | **missing** — `.gitignore` has no `.env` entry at all.                                                                                                                                             |
+| N15 | Dead shadcn/ui components and their Radix packages removed                                    | teardown §Phase 3                | **missing** — all 46 are dead.                                                                                                                                                                     |
 
 ---
 
@@ -87,7 +87,7 @@ about Cloudflare either way.
 The draft itself shipped a third answer: nitro's preset was `cloudflare-module`.
 
 **Decision: Netlify for the site, Cloudflare for the images.** The spec's line
-sits under *Image → Hosting*, so reading it as the image host rather than the
+sits under _Image → Hosting_, so reading it as the image host rather than the
 site host satisfies both documents. Consequence recorded in C2.
 
 ### C2 — Cloudflare image resizing does not work on a Netlify domain
