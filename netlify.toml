@@ -1,0 +1,68 @@
+[build]
+  command = "bun run build"
+  # nitro's netlify preset writes static output here and the SSR function to
+  # .netlify/functions-internal/, which Netlify discovers on its own.
+  publish = "dist"
+
+[build.environment]
+  # Node version comes from .nvmrc. Netlify reads bun.lock and uses bun for the
+  # install, so no package manager needs naming here.
+  NPM_FLAGS = "--version"
+
+# No redirect rule routes traffic to the SSR function, and none should. The
+# generated function declares `path = "/*"` with `preferStatic = true` in its
+# own config, so Netlify serves anything present in dist/ and falls through to
+# the server for everything else.
+#
+# In particular, do NOT add the SPA rule `/* /index.html 200`. There is no
+# index.html — this is a server-rendered app, not a single-page bundle — and
+# that rule would swallow every request before it reached the function.
+
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    # Clickjacking. frame-ancestors is the modern control; X-Frame-Options is
+    # kept for older browsers that ignore CSP.
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+    # A note on what this policy does and does not buy.
+    #
+    # script-src carries 'unsafe-inline' because TanStack Start emits two inline
+    # scripts per page — the hydration payload and a streaming barrier — and the
+    # app does not boot without them. That is the weak part of this policy and
+    # it should not be described as XSS-proof. Tightening it means nonces, which
+    # need the SSR response to generate one per request and thread it through
+    # both the script tags and this header; worth doing, not done here.
+    #
+    # The rest is real. object-src and base-uri shut off plugin embedding and
+    # base-tag hijacking, form-action stops a submission being redirected
+    # off-site, and frame-ancestors is the enforced version of X-Frame-Options.
+    #
+    # img-src allows any HTTPS origin because the photograph host is
+    # configurable through VITE_IMAGE_BASE_URL. Once the bucket's domain is
+    # fixed, replace `https:` with that origin.
+    Content-Security-Policy = """
+      default-src 'self'; \
+      script-src 'self' 'unsafe-inline'; \
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+      font-src 'self' https://fonts.gstatic.com; \
+      img-src 'self' data: https:; \
+      connect-src 'self'; \
+      object-src 'none'; \
+      base-uri 'self'; \
+      form-action 'self'; \
+      frame-ancestors 'none'"""
+
+# Fingerprinted build output. nitro writes the same rule into dist/_headers;
+# repeating it here means it survives if that generated file ever stops
+# carrying it.
+[[headers]]
+  for = "/assets/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

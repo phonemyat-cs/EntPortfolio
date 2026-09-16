@@ -1,0 +1,47 @@
+name: CI
+
+# Checks only. Netlify builds and deploys from the repository directly, so a
+# deploy job here would duplicate that build and drift out of sync with it.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push to a PR makes the in-flight run pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node from .nvmrc, bun from .bun-version. Two files because they pin two
+      # different runtimes — .nvmrc holds a Node version and setup-bun would
+      # try to install a bun release by that number if pointed at it.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      # --frozen-lockfile so a lockfile that does not match package.json fails
+      # here rather than resolving to something nobody tested.
+      - run: bun install --frozen-lockfile
+
+      - run: bun run typecheck
+
+      - run: bun run lint
+
+      # No VITE_IMAGE_BASE_URL is set, deliberately. The build has to succeed
+      # with no credentials and no image host, falling back to the bundled
+      # assets — see docs/IMAGES.md. If this step ever needs a secret to pass,
+      # that fallback has broken.
+      - run: bun run build

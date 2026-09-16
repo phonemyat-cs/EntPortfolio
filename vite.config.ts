@@ -27,7 +27,11 @@ export default defineConfig({
       // Nitro builds from this.
       server: { entry: "server" },
     }),
-    nitro(),
+    // Netlify. Without an explicit preset nitro auto-detects, which means the
+    // output shape depends on which CI happens to run the build — it picks
+    // node-server locally and would pick netlify on Netlify. Pinning it makes
+    // a local build produce the same artefact as a deploy.
+    nitro({ preset: "netlify" }),
     viteReact(),
   ],
   resolve: {
