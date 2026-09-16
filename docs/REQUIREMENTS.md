@@ -19,10 +19,10 @@ the reason recorded.
 | --- | --- | --- | --- |
 | R1 | "Search/sort bar" | spec.md §Search/sort bar | **gap (accepted)** — the build has filters but no text search and no sort control. Scope decision: filters only. |
 | R2 | "Attribute/options: Location, theme, device" | spec.md §Search/sort bar | **present** — all three are filter dimensions. |
-| R3 | Image attributes: "Location, theme, device, color, preset, tag (optional – trip tag), preset (optional)" | spec.md §Image | **partial** — location, theme, device, color present. Preset and trip tag missing. R9, R10. |
-| R4 | "Image Grid: A mix of 16:9, 4:3, 1:1" | spec.md §Image Grid | **missing** — the grid has `wide` (16:9) and `standard` (4:3) only. No 1:1. |
-| R5 | "Preset: A collection of presets group by the same / similar style" | spec.md §Preset | **missing** — the footer has three preset links, all `href="#"`. Nothing groups photos by preset. |
-| R6 | "Contact: Email, Instagram" | spec.md §Contact | **partial** — a mailto link is present. Instagram is an `href="#"` dead link. |
+| R3 | Image attributes: "Location, theme, device, color, preset, tag (optional – trip tag), preset (optional)" | spec.md §Image | **present** — all six, with `tripTag` optional. Reading recorded as U1. |
+| R4 | "Image Grid: A mix of 16:9, 4:3, 1:1" | spec.md §Image Grid | **present** — `wide`, `standard` and `square`. |
+| R5 | "Preset: A collection of presets group by the same / similar style" | spec.md §Preset | **present** — footer lists each preset with its frame count and filters the archive to it. Reading recorded as U4. |
+| R6 | "Contact: Email, Instagram" | spec.md §Contact | **present** — both wired to `src/content/site.ts`. Values are still placeholders. |
 | R7 | "Feeback Form - Optional" | spec.md §Feedback Form | **gap (accepted)** — marked optional in the spec. Not built. Needs a form backend; see note below. |
 | R8 | "Hosting: Cloudflare free tier" | spec.md §Image → Hosting | **conflicts** — see the conflicts section. |
 
@@ -30,8 +30,8 @@ the reason recorded.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R9 | Preset is a filterable image attribute | **missing** |
-| R10 | Trip tag is a filterable image attribute, optional per image | **missing** |
+| R9 | Preset is a filterable image attribute | **present** |
+| R10 | Trip tag is a filterable image attribute, optional per image | **present** |
 
 ### Present but not in the spec
 
@@ -41,7 +41,7 @@ them for requirements.
 | ID | Feature | Note |
 | --- | --- | --- |
 | R11 | Snap-scrolling hero gallery, six frames, drag + arrows + pagination | From `docs/DESIGN-INTENT.md`, not the spec. |
-| R12 | "extras" filter — film grain, people, rain, long exposure | Not a spec attribute. Closest match is the spec's "tag", but the spec scopes tag to trips. |
+| R12 | "extras" filter — film grain, people, rain, long exposure | Not a spec attribute. Closest match is the spec's "tag", but the spec scopes tag to trips. Kept alongside `tripTag`; see U2. |
 | R13 | Result count, clear-filters action, empty state | Reasonable and kept. |
 | R14 | Responsive nav with a mobile menu | Kept. |
 
@@ -60,9 +60,9 @@ verification checklist, which is the only written standard this build has.
 | N4 | Every route loads after a hard refresh | teardown §Verification | **present** — server-rendered, so every URL is a real server response. The SPA-redirect failure mode does not exist here. |
 | N5 | Lighthouse performance and accessibility both above 90, no layout shift | teardown §Verification | **not measured** — no Lighthouse run yet. |
 | N6 | Every image has non-placeholder `alt` text | teardown §Verification, §Phase 4 | **conflicts** — see below. |
-| N7 | Every image has explicit `width`/`height` | teardown §Phase 4 | **partial** — set on every `<img>`, but the values are asserted in the data rather than read from the files, and the hero widths are hardcoded by array index. |
-| N8 | `srcset`, `loading="lazy"`, `decoding="async"` on images | teardown §Phase 4 | **missing** — no `srcset` anywhere, no `decoding`. `loading="lazy"` is on grid images only, correctly omitted from the hero. |
-| N9 | Galleries in data, not hardcoded in JSX | teardown §Phase 4 | **missing** — the photo array lives inside `src/routes/index.tsx`. |
+| N7 | Every image has explicit `width`/`height` | teardown §Phase 4 | **present** — all eight verified against the JPEG headers; the hero now reads them from the photo record instead of an index check. |
+| N8 | `srcset`, `loading="lazy"`, `decoding="async"` on images | teardown §Phase 4 | **partial** — `decoding="async"` everywhere, lazy on everything but the hero's first frame, which is eager with `fetchPriority="high"`. `srcset` still missing; it needs the remote variants (C2). |
+| N9 | Galleries in data, not hardcoded in JSX | teardown §Phase 4 | **present** — `src/content/photos.ts`. |
 | N10 | Source images web-ready, ~2500px longest edge, never full-resolution exports | teardown §Phase 4 | **conflicts** — `photos-source/` holds 7728×5152 originals, 11–25MB each. |
 | N11 | Bundle size recorded against the Phase 0 baseline | teardown §Verification | **present** — `docs/INVENTORY.md` §2. |
 | N12 | Node version pinned via `.nvmrc` and `engines` | teardown §Phase 3 | **missing** |
@@ -116,13 +116,17 @@ it names a host.
 
 ### C4 — "Every image has non-placeholder alt text" vs placeholder content
 
-N6 cannot be satisfied while the site runs on invented content. The hero images
-do carry written alt text, but it describes generated pictures of places nobody
-went. The grid is worse: it passes `alt={photo.title}`, so the alt text is the
-caption, which is not a description of the image.
+N6 cannot be satisfied while the site runs on invented content.
 
-Not resolvable in code. Flagged as a content gap, per the teardown's instruction
-to flag rather than invent descriptions.
+The mechanical half is fixed: `Photo` now carries an `alt` field separate from
+`title`, and every image passes it. The grid previously passed
+`alt={photo.title}`, so its alt text was the caption — "Weather Moving In"
+describes nothing to a screen reader.
+
+What remains is not fixable in code. The descriptions are of generated images
+of places nobody went, so they are accurate about the pixels and false about
+the world. Flagged as a content gap, per the teardown's instruction to flag
+rather than invent descriptions.
 
 ### C5 — Grid ratios: spec asks for three, design intent gives two
 
