@@ -10,6 +10,8 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import ogImage from "../assets/coast-walker.jpg?url";
+import { site, siteUrl, absoluteUrl } from "../content/site";
 
 function NotFoundComponent() {
   return (
@@ -73,14 +75,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rowan Vale Photography" },
-      { name: "description", content: "Film-inspired landscape and street photography by Rowan Vale." },
-      { name: "author", content: "Rowan Vale" },
-      { property: "og:title", content: "Rowan Vale Photography" },
-      { property: "og:description", content: "Film-inspired landscape and street photography." },
+      { title: site.title },
+      { name: "description", content: site.description },
+      { name: "author", content: site.name },
+      { property: "og:title", content: site.title },
+      { property: "og:description", content: site.description },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: site.title },
+      { property: "og:url", content: siteUrl },
+      // Scrapers ignore relative image URLs, so this has to be absolute.
+      { property: "og:image", content: absoluteUrl(ogImage) },
+      { property: "og:image:alt", content: "A figure walking on a misty coast at last light." },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:image", content: absoluteUrl(ogImage) },
     ],
     links: [
       {
@@ -91,6 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "canonical", href: siteUrl },
     ],
   }),
   shellComponent: RootShell,
