@@ -3,7 +3,6 @@ import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 
 // This plugin chain was previously supplied wholesale by a vendor wrapper
 // package; see docs/INVENTORY.md §4 for what it contained and why it was
@@ -14,7 +13,6 @@ import tsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       // Fail the build if client code imports a server module, rather than
       // shipping it to the browser. Carried over unchanged.
@@ -33,6 +31,9 @@ export default defineConfig({
     viteReact(),
   ],
   resolve: {
+    // Vite 8 reads the paths entry in tsconfig.json natively, which is what
+    // the vite-tsconfig-paths plugin used to do here.
+    tsconfigPaths: true,
     // Duplicate copies of React or Query in the graph break hooks and context
     // at runtime with errors that look like application bugs.
     dedupe: [
