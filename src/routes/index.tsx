@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 
-import { filterOptions, heroPhotos, photos, type FilterKey } from "@/content/photos";
+import { filterLabels, filterOptions, heroPhotos, photos, presetCollections, type FilterKey } from "@/content/photos";
 import { site } from "@/content/site";
 
 export const Route = createFileRoute("/")({
@@ -24,6 +24,13 @@ function Portfolio() {
   const stripRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => photos.filter((photo) => Object.entries(filters).every(([key, value]) => photo[key as FilterKey] === value)), [filters]);
+  // A preset is a grouping of photographs (docs/REQUIREMENTS.md U4), so
+  // selecting one filters the archive to it rather than leaving the site.
+  const showPreset = (preset: string) => {
+    setFilters({ preset });
+    document.getElementById("archive")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const moveSlide = (next: number) => {
     const index = (next + heroPhotos.length) % heroPhotos.length;
     setSlide(index);
@@ -52,9 +59,9 @@ function Portfolio() {
 
       <div className="min-w-0">
         <div ref={stripRef} onScroll={(e) => { const el = e.currentTarget; setSlide(Math.round(el.scrollLeft / el.clientWidth)); }} className="no-scrollbar flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto scroll-smooth overscroll-x-contain">
-          {heroPhotos.map((src, i) => <figure key={src} className="relative h-full min-w-full snap-start overflow-hidden bg-muted">
-            <img src={src} alt={["Figure walking on a misty coast", "Tram on a rain-soaked street", "Clouds over a pine ridge", "Figure in a concrete stairwell", "Still lake at dusk", "Dunes under an overcast sky"][i]} width={i === 2 || i === 4 ? 1600 : 1408} height={i === 2 || i === 4 ? 912 : 1056} className="h-full w-full object-cover" />
-            <figcaption className="absolute bottom-0 left-0 right-0 flex justify-between bg-film/75 px-4 py-3 text-[10px] uppercase backdrop-blur-sm"><span>{String(i + 1).padStart(2, "0")} / 06</span><span className="text-film-muted">Drag or scroll</span></figcaption>
+          {heroPhotos.map((photo, i) => <figure key={photo.id} className="relative h-full min-w-full snap-start overflow-hidden bg-muted">
+            <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} decoding="async" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} className="h-full w-full object-cover" />
+            <figcaption className="absolute bottom-0 left-0 right-0 flex justify-between bg-film/75 px-4 py-3 text-[10px] uppercase backdrop-blur-sm"><span>{String(i + 1).padStart(2, "0")} / {String(heroPhotos.length).padStart(2, "0")}</span><span className="text-film-muted">Drag or scroll</span></figcaption>
           </figure>)}
         </div>
         <div className="mt-4 flex items-center justify-between">
@@ -69,7 +76,7 @@ function Portfolio() {
         <div className="flex items-center justify-between"><p className="text-[10px] uppercase text-film-muted">Filter archive</p><button onClick={() => setFilters({})} disabled={!Object.keys(filters).length} className="text-xs text-film-accent disabled:opacity-30">Clear filters</button></div>
         <div className="mt-4 flex flex-wrap gap-2">
           {(Object.keys(filterOptions) as FilterKey[]).map((key) => <div key={key} className="relative">
-            <button onClick={() => setOpenFilter(openFilter === key ? null : key)} aria-expanded={openFilter === key} className={`border px-3 py-2 text-xs capitalize transition-colors ${filters[key] ? "border-film-accent bg-accent text-accent-foreground" : "border-film-line hover:border-film-muted"}`}>{key}{filters[key] ? ` · ${filters[key]}` : " +"}</button>
+            <button onClick={() => setOpenFilter(openFilter === key ? null : key)} aria-expanded={openFilter === key} className={`border px-3 py-2 text-xs capitalize transition-colors ${filters[key] ? "border-film-accent bg-accent text-accent-foreground" : "border-film-line hover:border-film-muted"}`}>{filterLabels[key]}{filters[key] ? ` · ${filters[key]}` : " +"}</button>
             {openFilter === key && <div className="absolute left-0 top-full z-30 mt-2 min-w-44 border border-film-line bg-popover p-1 shadow-2xl">{filterOptions[key].map((option) => <button key={option} onClick={() => { setFilters((f) => ({ ...f, [key]: option })); setOpenFilter(null); }} className="block w-full px-3 py-2 text-left text-xs hover:bg-secondary">{option}</button>)}</div>}
           </div>)}
           <span className="ml-auto self-center text-[10px] text-film-muted">{filtered.length} {filtered.length === 1 ? "frame" : "frames"}</span>
@@ -79,7 +86,7 @@ function Portfolio() {
 
     <section className="mx-auto max-w-[1440px] px-5 py-12 md:px-10 md:py-20">
       {filtered.length ? <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((photo, i) => <article key={photo.title} className={photo.ratio === "wide" && i % 3 === 0 ? "sm:col-span-2" : ""}>
-        <div className={`group overflow-hidden bg-muted ${photo.ratio === "wide" ? "aspect-video" : "aspect-[4/3]"}`}><img loading="lazy" src={photo.src} alt={photo.title} width={photo.width} height={photo.height} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" /></div>
+        <div className={`group overflow-hidden bg-muted ${photo.ratio === "wide" ? "aspect-video" : photo.ratio === "square" ? "aspect-square" : "aspect-[4/3]"}`}><img loading="lazy" decoding="async" src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" /></div>
         <div className="mt-3 flex items-start justify-between gap-4"><h2 className="font-display text-xl">{photo.title}</h2><p className="text-right text-[10px] leading-5 text-film-muted">{photo.location}<br />{photo.device}</p></div>
       </article>)}</div> : <div className="py-24 text-center"><p className="font-display text-3xl">No frames meet in this light.</p><button onClick={() => setFilters({})} className="mt-5 border-b border-film-accent pb-1 text-xs text-film-accent">Reset the archive</button></div>}
     </section>
@@ -87,7 +94,7 @@ function Portfolio() {
     <footer id="contact" className="border-t border-film-line bg-card">
       <div className="mx-auto grid max-w-[1440px] gap-12 px-5 py-16 md:grid-cols-2 md:px-10 md:py-24">
         <div><p className="text-[10px] uppercase text-film-muted">Commissions & conversation</p><h2 className="mt-4 max-w-xl font-display text-4xl sm:text-5xl">Have a place, story, or feeling worth keeping?</h2><a href={`mailto:${site.email}`} className="mt-8 inline-block border-b border-film-accent pb-1 text-sm text-film-accent">{site.email}</a></div>
-        <div id="presets" className="grid grid-cols-2 gap-8 md:justify-self-end md:gap-16"><div><p className="mb-4 text-[10px] uppercase text-film-muted">Film presets</p><a href="#" className="block py-1 text-sm hover:text-film-accent">Quiet Weather ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">After Rain ↗</a><a href="#" className="block py-1 text-sm hover:text-film-accent">Full collection ↗</a></div><div><p className="mb-4 text-[10px] uppercase text-film-muted">Elsewhere</p><a href={site.instagram.url} rel="me noopener" target="_blank" className="block py-1 text-sm hover:text-film-accent">Instagram {site.instagram.handle} ↗</a></div></div>
+        <div id="presets" className="grid grid-cols-2 gap-8 md:justify-self-end md:gap-16"><div><p className="mb-4 text-[10px] uppercase text-film-muted">Film presets</p>{presetCollections.map(({ name, count }) => <button key={name} onClick={() => showPreset(name)} className="block w-full py-1 text-left text-sm hover:text-film-accent">{name} <span className="text-film-muted">{count}</span></button>)}<button onClick={() => setFilters({})} className="block w-full py-1 text-left text-sm hover:text-film-accent">Full collection <span className="text-film-muted">{photos.length}</span></button></div><div><p className="mb-4 text-[10px] uppercase text-film-muted">Elsewhere</p><a href={site.instagram.url} rel="me noopener" target="_blank" className="block py-1 text-sm hover:text-film-accent">Instagram {site.instagram.handle} ↗</a></div></div>
       </div>
       <div className="mx-auto flex max-w-[1440px] justify-between border-t border-film-line px-5 py-5 text-[10px] text-film-muted md:px-10"><span>© {new Date().getFullYear()} {site.name}</span><a href="#top">Back to top ↑</a></div>
     </footer>
