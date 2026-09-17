@@ -9,7 +9,6 @@
  * This is a local tool, not part of `bun run build`. The site build never
  * touches photos-source/ — see docs/IMAGES.md for why and for the upload step.
  *
- *   bun add -d sharp
  *   node scripts/build-variants.mjs
  *   node scripts/build-variants.mjs --id coast-walker --source DSCF2490.jpg
  */

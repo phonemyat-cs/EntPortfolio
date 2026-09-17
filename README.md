@@ -8,6 +8,10 @@ TanStack Start, styled with Tailwind, deployed to Netlify.
 > generator it grew out of — "Rowan Vale" is not a real photographer. See
 > [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) for the gap list.
 
+> **New here, or just want to get it online?**
+> Follow [`docs/GETTING-STARTED.md`](docs/GETTING-STARTED.md) — every remaining
+> step in order, from running it locally to a live site on your own domain.
+
 ## Requirements
 
 - [Bun](https://bun.sh) 1.3 or newer.
@@ -90,6 +94,7 @@ GitHub Actions runs checks only, on pull requests: typecheck, lint, build.
 
 | File                                                   | Contents                                                                   |
 | ------------------------------------------------------ | -------------------------------------------------------------------------- |
+| [`docs/GETTING-STARTED.md`](docs/GETTING-STARTED.md)   | Step-by-step: content, images, deployment. Start here.                     |
 | [`docs/spec.md`](docs/spec.md)                         | The requirements document. Source of truth for what the site should do.    |
 | [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)         | Every requirement from the spec, with its build status and the known gaps. |
 | [`docs/INVENTORY.md`](docs/INVENTORY.md)               | The draft as handed over, recorded before any change.                      |

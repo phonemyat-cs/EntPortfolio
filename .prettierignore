@@ -16,3 +16,9 @@ routeTree.gen.ts
 # formatting them edits the evidence.
 docs/spec.md
 docs/lovable-teardown.md
+
+# Walkthrough containing code quoted verbatim from source files. Prettier
+# reformats fenced code blocks, which silently rewrote a quoted line into
+# something that no longer matched src/content/site.ts — exactly the line a
+# beginner is told to go and find.
+docs/GETTING-STARTED.md

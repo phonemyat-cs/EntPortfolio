@@ -47,9 +47,10 @@ are only spending someone's bandwidth.
 ### 1. Generate the variants
 
 ```sh
-bun add -d sharp                       # once
 node scripts/build-variants.mjs        # everything in photos-source/
 ```
+
+`sharp` is already a devDependency, so `bun install` is all the setup there is.
 
 Or one photograph, giving it a real id rather than a camera filename:
 
