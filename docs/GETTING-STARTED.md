@@ -91,6 +91,27 @@ the bottom.
 > **Use a business email, not a personal one.** It goes in the public
 > repository and on a public web page, where scrapers will find it.
 
+### 1b. The tab icon (optional)
+
+The little icon in the browser tab is a placeholder — a camera aperture in the
+site's colours. It is **`public/favicon.svg`**.
+
+If you have a logo, replace that file with your own SVG, keep the
+`viewBox="0 0 64 64"`, then run:
+
+```sh
+node scripts/build-favicon.mjs
+```
+
+That regenerates `favicon.ico` and `apple-touch-icon.png` from your SVG. Commit
+all three.
+
+> **Keep it simple.** The icon is usually seen at 16 by 16 pixels, about the
+> size of this full stop. Thin lines and small text disappear completely.
+
+> **No `--` inside an SVG comment.** Two hyphens in a row is invalid XML and the
+> whole file will be rejected. The script will tell you if you do it.
+
 ---
 
 ## Step 2 — Put your photographs in

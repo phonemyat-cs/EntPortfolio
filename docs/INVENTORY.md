@@ -191,6 +191,23 @@ cheaper choice.
 | README                                               | `README.md` (whole file)                          | Rewrite. Lovable onboarding copy, "Open your project in the Lovable editor".                                                                                  |
 | `roadmap.md`                                         | root                                              | Lovable's own build checklist, all items ticked. Superseded by `docs/REQUIREMENTS.md` in Phase 2.                                                             |
 
+### Missed in the first pass: the favicon
+
+`public/favicon.ico` was Lovable's own logo — their gradient heart mark, a
+single 256x256 PNG in an ICO wrapper — shipping as the site's tab icon.
+
+Every check in Phase 1 was a text grep, and this is a binary file, so nothing
+caught it. It was found only when someone looked at the browser tab. Worth
+recording as a lesson: a grep-based teardown checklist cannot see inside
+images, fonts, or any other binary asset, and those need looking at.
+
+It is also the piece with the sharpest edge. The others were dead code or
+metadata; this one put another company's trademark on the site and told every
+visitor which tool built it.
+
+Replaced in a later commit with an aperture mark in the site's own palette,
+generated from `public/favicon.svg`.
+
 ### Not found
 
 No `gpteng.co`. No `gptengineer.js`. No `componentTagger`. No `lovable-tagger`.
